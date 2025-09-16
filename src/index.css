@@ -2,41 +2,78 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* Cinematic Death Note-inspired design system 
+Premium black/white theme with blood red accents */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Core theme - Pure black background, crisp white text */
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    /* Cards and surfaces */
+    --card: 0 0% 2%;
+    --card-foreground: 0 0% 98%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 1%;
+    --popover-foreground: 0 0% 98%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Primary - Death Note red accent */
+    --primary: 0 85% 45%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 0 85% 60%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Secondary - Dark grays */
+    --secondary: 0 0% 8%;
+    --secondary-foreground: 0 0% 95%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Muted elements */
+    --muted: 0 0% 5%;
+    --muted-foreground: 0 0% 70%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* Accent - Neon cyan for interactive elements */
+    --accent: 180 100% 50%;
+    --accent-foreground: 0 0% 0%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    /* Destructive */
+    --destructive: 0 85% 55%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    /* Borders and inputs - subtle grays */
+    --border: 0 0% 15%;
+    --input: 0 0% 8%;
+    --ring: 0 85% 45%;
 
-    --radius: 0.5rem;
+    /* Radius for premium feel */
+    --radius: 0.25rem;
+
+    /* Custom cinematic colors */
+    --blood-red: 0 85% 45%;
+    --neon-cyan: 180 100% 50%;
+    --dark-gray: 0 0% 8%;
+    --light-gray: 0 0% 85%;
+    
+    /* Gradients */
+    --gradient-blood: linear-gradient(135deg, hsl(0 85% 45%) 0%, hsl(0 65% 35%) 100%);
+    --gradient-dark: linear-gradient(180deg, hsl(0 0% 0%) 0%, hsl(0 0% 3%) 100%);
+    --gradient-accent: linear-gradient(90deg, hsl(180 100% 50%) 0%, hsl(200 100% 60%) 100%);
+    
+    /* Shadows */
+    --shadow-blood: 0 10px 40px -10px hsl(0 85% 45% / 0.4);
+    --shadow-glow: 0 0 30px hsl(180 100% 50% / 0.3);
+    --shadow-dark: 0 10px 25px -5px hsl(0 0% 0% / 0.8);
+    
+    /* Typography */
+    --font-primary: 'Inter', system-ui, sans-serif;
+    --font-display: 'Inter', system-ui, sans-serif;
+    
+    /* Animations */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    
+    /* Dot grid */
+    --dot-opacity: 0.1;
+    --dot-size: 1px;
 
     --sidebar-background: 0 0% 98%;
 
@@ -55,34 +92,27 @@ All colors MUST be HSL.
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
+  /* Dark mode is our default theme */
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
+    --card: 0 0% 2%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 1%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 85% 45%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 8%;
+    --secondary-foreground: 0 0% 95%;
+    --muted: 0 0% 5%;
+    --muted-foreground: 0 0% 70%;
+    --accent: 180 100% 50%;
+    --accent-foreground: 0 0% 0%;
+    --destructive: 0 85% 55%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 15%;
+    --input: 0 0% 8%;
+    --ring: 0 85% 45%;
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -100,6 +130,121 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground overflow-x-hidden;
+    font-family: var(--font-primary);
+  }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Custom animations and effects */
+@layer components {
+  /* Dot grid overlay */
+  .dot-grid {
+    background-image: radial-gradient(circle, hsl(0 0% 100% / var(--dot-opacity)) var(--dot-size), transparent var(--dot-size));
+    background-size: 20px 20px;
+    background-position: 0 0;
+  }
+  
+  /* Dither effect for text reveals */
+  .dither-reveal {
+    background: linear-gradient(90deg, transparent 0%, hsl(var(--foreground)) 50%, transparent 100%);
+    background-size: 200% 100%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: dither-slide 1s ease-out forwards;
+  }
+  
+  /* Neon glow effect */
+  .neon-glow {
+    box-shadow: 0 0 20px hsl(var(--accent) / 0.5), 0 0 40px hsl(var(--accent) / 0.3);
+  }
+  
+  /* Blood red glow */
+  .blood-glow {
+    box-shadow: var(--shadow-blood);
+  }
+  
+  /* Interactive button styles */
+  .btn-cinematic {
+    @apply bg-secondary border border-border text-foreground px-6 py-3 rounded-sm;
+    @apply hover:bg-primary hover:text-primary-foreground transition-all duration-300;
+    @apply hover:shadow-[0_0_20px_hsl(var(--primary)/0.4)];
+  }
+  
+  /* Navigation underline animation */
+  .nav-link {
+    @apply relative overflow-hidden;
+  }
+  
+  .nav-link::after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-full h-0.5 bg-accent;
+    @apply transform scale-x-0 origin-right transition-transform duration-300;
+  }
+  
+  .nav-link:hover::after,
+  .nav-link.active::after {
+    @apply scale-x-100 origin-left;
+  }
+  
+  /* Folder card styles */
+  .folder-card {
+    @apply bg-card border border-border rounded-lg p-4 cursor-pointer;
+    @apply hover:bg-secondary transition-all duration-300;
+    @apply hover:scale-105 hover:shadow-lg;
+  }
+  
+  /* Vinyl spinning animation */
+  .vinyl-spin {
+    animation: vinyl-rotate 2s linear infinite;
+  }
+  
+  /* Floating animation */
+  .float {
+    animation: float 3s ease-in-out infinite;
+  }
+}
+
+/* Keyframe animations */
+@keyframes dither-slide {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes vinyl-rotate {
+  from {
+    transform: rotateZ(0deg);
+  }
+  to {
+    transform: rotateZ(360deg);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Scroll-based animations */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
