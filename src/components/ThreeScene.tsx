@@ -1,7 +1,8 @@
 import { useRef, useEffect, useState } from 'react';
-import { Canvas, useFrame, useLoader } from '@react-three/fiber';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
+import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader.js';
 import { Environment, PerspectiveCamera } from '@react-three/drei';
 import * as THREE from 'three';
 
@@ -15,12 +16,19 @@ interface ModelProps {
 function Model({ url, scrollY, inPortfolio, scale = 1 }: ModelProps) {
   const meshRef = useRef<THREE.Group>(null);
   const [gltf, setGltf] = useState<any>(null);
+  const { gl } = useThree();
 
   useEffect(() => {
     const loader = new GLTFLoader();
     const dracoLoader = new DRACOLoader();
     dracoLoader.setDecoderPath('/draco/');
+
+    const ktx2Loader = new KTX2Loader();
+    ktx2Loader.setTranscoderPath('/basis/');
+    try { ktx2Loader.detectSupport(gl); } catch {}
+
     loader.setDRACOLoader(dracoLoader);
+    loader.setKTX2Loader(ktx2Loader);
 
     loader.load(
       url,
@@ -39,11 +47,11 @@ function Model({ url, scrollY, inPortfolio, scale = 1 }: ModelProps) {
 
     if (inPortfolio) {
       // Lock to facing right position
-      meshRef.current.rotation.y = THREE.MathUtils.lerp(
-        meshRef.current.rotation.y,
-        Math.PI * 0.25,
-        0.08
-      );
+        meshRef.current.rotation.y = THREE.MathUtils.lerp(
+          meshRef.current.rotation.y,
+          Math.PI / 2,
+          0.08
+        );
     } else {
       // Scroll-based rotation
       const targetRotation = scrollY * 0.002;
@@ -76,11 +84,12 @@ interface ThreeSceneProps {
 export default function ThreeScene({ scrollY, inPortfolio, currentModel }: ThreeSceneProps) {
   return (
     <div className="fixed inset-0 -z-10">
-      <Canvas>
+      <Canvas gl={{ physicallyCorrectLights: true, toneMapping: THREE.ACESFilmicToneMapping, outputColorSpace: THREE.SRGBColorSpace }}>
         <PerspectiveCamera makeDefault position={[0, 0, 5]} />
         
         {/* Lighting setup */}
         <ambientLight intensity={0.3} />
+        <hemisphereLight skyColor={'#ffffff'} groundColor={'#222222'} intensity={0.6} />
         <directionalLight
           position={[10, 10, 5]}
           intensity={1}
@@ -88,10 +97,9 @@ export default function ThreeScene({ scrollY, inPortfolio, currentModel }: Three
           shadow-mapSize-width={2048}
           shadow-mapSize-height={2048}
         />
-        <pointLight position={[-10, -10, -10]} intensity={0.5} color="#ff0000" />
         
         {/* Environment for reflections */}
-        <Environment preset="city" />
+        <Environment preset="city" background={false} />
         
         {/* Main 3D Model */}
         <Model

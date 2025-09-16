@@ -143,9 +143,9 @@ Premium black/white theme with blood red accents */
 @layer components {
   /* Dot grid overlay */
   .dot-grid {
-    background-image: radial-gradient(circle, hsl(0 0% 100% / var(--dot-opacity)) var(--dot-size), transparent var(--dot-size));
-    background-size: 20px 20px;
-    background-position: 0 0;
+    background-image: url('/assets/dot-grid.jpg');
+    background-size: 24px 24px;
+    background-repeat: repeat;
   }
   
   /* Dither effect for text reveals */

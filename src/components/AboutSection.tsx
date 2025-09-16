@@ -27,7 +27,7 @@ export default function AboutSection() {
           className="text-center mb-16"
         >
           <h2 className="text-5xl font-bold mb-6 dither-reveal">
-            About <span className="text-primary">Kakashi</span>
+            About <span className="text-primary">Kartik</span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             A visual storyteller dedicated to capturing moments with precision, artistry, and cinematic vision.
@@ -100,21 +100,7 @@ export default function AboutSection() {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="space-y-8"
           >
-            {/* Portrait */}
-            <div className="relative">
-              <div className="w-full h-80 bg-gradient-to-br from-muted to-secondary rounded-lg overflow-hidden">
-                <img
-                  src="/assets/kakashi-profile.jpg"
-                  alt="Kakashi Raghuwanshi"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent rounded-lg" />
-              <div className="absolute bottom-4 left-4 text-white">
-                <p className="font-medium">Behind the camera</p>
-                <p className="text-sm opacity-80">Crafting visual stories</p>
-              </div>
-            </div>
+            {/* Portrait removed as requested */}
 
             {/* Equipment */}
             <div>

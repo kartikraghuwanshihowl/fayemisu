@@ -11,7 +11,7 @@ import ContactSection from '@/components/ContactSection';
 const Index = () => {
   const scrollY = useScrollY();
   const activeSection = useScrollSpy(['home', 'portfolio', 'music', 'about', 'contact']);
-  const [currentModel, setCurrentModel] = useState('/models/scene.gltf');
+  const [currentModel, setCurrentModel] = useState('/assets/models/scene.gltf');
 
   // Determine if we're in portfolio section for 3D model positioning
   const inPortfolio = activeSection === 'portfolio';
@@ -20,16 +20,16 @@ const Index = () => {
   useEffect(() => {
     switch (activeSection) {
       case 'home':
-        setCurrentModel('/models/scene.gltf');
+        setCurrentModel('/assets/models/scene.gltf');
         break;
       case 'portfolio':
-        setCurrentModel('/models/nikon.gltf');
+        setCurrentModel('/assets/models/nikon.gltf');
         break;
       case 'music':
-        setCurrentModel('/models/camera.gltf');
+        setCurrentModel('/assets/models/camera.gltf');
         break;
       default:
-        setCurrentModel('/models/scene.gltf');
+        setCurrentModel('/assets/models/scene.gltf');
     }
   }, [activeSection]);
 
@@ -65,7 +65,7 @@ const Index = () => {
       <footer className="relative z-10 bg-card border-t border-border py-8">
         <div className="container mx-auto px-6 text-center">
           <p className="text-muted-foreground">
-            © 2024 Kakashi Raghuwanshi. All rights reserved.
+            © 2024 Kartik. All rights reserved.
           </p>
         </div>
       </footer>

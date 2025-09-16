@@ -18,7 +18,7 @@ function VinylModel({ isPlaying }: { isPlaying: boolean }) {
     loader.setDRACOLoader(dracoLoader);
 
     loader.load(
-      '/models/vinyl.gltf',
+      '/assets/models/vinyl.gltf',
       (loadedGltf) => {
         setGltf(loadedGltf);
       },
@@ -61,7 +61,7 @@ export default function MusicSection() {
   const playlists = [
     {
       name: 'Cinematic Sessions',
-      artist: 'Kakashi Raghuwanshi',
+      artist: 'Kartik',
       cover: '/assets/sample-portrait.jpg',
       spotifyUrl: 'https://open.spotify.com/playlist/example1',
     },
@@ -98,7 +98,7 @@ export default function MusicSection() {
             transition={{ duration: 0.8 }}
             className="relative h-96"
           >
-            <Canvas camera={{ position: [0, 0, 5] }}>
+            <Canvas gl={{ physicallyCorrectLights: true, toneMapping: THREE.ACESFilmicToneMapping, outputColorSpace: THREE.SRGBColorSpace }} camera={{ position: [0, 0, 5] }}>
               <ambientLight intensity={0.5} />
               <pointLight position={[10, 10, 10]} intensity={1} />
               <pointLight position={[-10, -10, -10]} intensity={0.5} color="#ff0000" />

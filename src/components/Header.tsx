@@ -46,8 +46,7 @@ export default function Header({ activeSection, onNavigate }: HeaderProps) {
             className="text-2xl font-bold cursor-pointer"
             onClick={() => onNavigate('home')}
           >
-            <span className="text-foreground">Kakashi</span>
-            <span className="text-primary"> Raghuwanshi</span>
+            <span className="text-foreground">Kartik</span>
           </motion.div>
 
           {/* Navigation */}
