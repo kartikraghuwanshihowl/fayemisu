@@ -74,7 +74,7 @@ export default function MusicSection() {
   ];
 
   return (
-    <section id="music" className="min-h-screen py-20 relative bg-gradient-to-b from-background to-muted/20">
+    <section id="music" className="min-h-screen py-20 relative bg-background">
       <div className="container mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 50 }}
@@ -98,7 +98,7 @@ export default function MusicSection() {
             transition={{ duration: 0.8 }}
             className="relative h-96"
           >
-            <Canvas gl={{ physicallyCorrectLights: true, toneMapping: THREE.ACESFilmicToneMapping, outputColorSpace: THREE.SRGBColorSpace }} camera={{ position: [0, 0, 5] }}>
+            <Canvas gl={{ toneMapping: THREE.ACESFilmicToneMapping, outputColorSpace: THREE.SRGBColorSpace }} camera={{ position: [0, 0, 5] }}>
               <ambientLight intensity={0.5} />
               <pointLight position={[10, 10, 10]} intensity={1} />
               <pointLight position={[-10, -10, -10]} intensity={0.5} color="#ff0000" />

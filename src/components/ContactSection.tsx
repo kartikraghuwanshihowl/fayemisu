@@ -26,8 +26,8 @@ export default function ContactSection() {
     {
       icon: '📧',
       label: 'Email',
-      value: 'kakashi@visualstories.com',
-      href: 'mailto:kakashi@visualstories.com',
+      value: 'kartik@visualstories.com',
+      href: 'mailto:kartik@visualstories.com',
     },
     {
       icon: '📱',

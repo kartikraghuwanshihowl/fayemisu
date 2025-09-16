@@ -62,8 +62,9 @@ const Index = () => {
       </main>
 
       {/* Footer */}
-      <footer className="relative z-10 bg-card border-t border-border py-8">
-        <div className="container mx-auto px-6 text-center">
+      <footer className="relative z-10 bg-background border-t border-border py-12 overflow-hidden">
+        <div className="absolute inset-0 dot-grid opacity-20 pointer-events-none" />
+        <div className="container mx-auto px-6 text-center relative">
           <p className="text-muted-foreground">
             © 2024 Kartik. All rights reserved.
           </p>

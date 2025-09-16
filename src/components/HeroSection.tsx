@@ -44,12 +44,11 @@ export default function HeroSection() {
             transition={{ duration: 0.8, delay: 1.5 }}
             className="flex flex-col sm:flex-row gap-4 justify-center items-center"
           >
-            <button className="btn-cinematic group">
-              <span className="relative z-10">Explore Portfolio</span>
-              <div className="absolute inset-0 bg-gradient-to-r from-primary to-primary-glow opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-sm" />
+            <button className="btn-cinematic bg-primary text-primary-foreground hover:bg-primary-glow">
+              Explore Portfolio
             </button>
             
-            <button className="btn-cinematic border-accent text-accent hover:bg-accent hover:text-accent-foreground">
+            <button className="btn-cinematic bg-primary text-primary-foreground hover:bg-primary-glow">
               Listen to Sessions
             </button>
           </motion.div>

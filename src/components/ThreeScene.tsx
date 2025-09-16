@@ -84,12 +84,12 @@ interface ThreeSceneProps {
 export default function ThreeScene({ scrollY, inPortfolio, currentModel }: ThreeSceneProps) {
   return (
     <div className="fixed inset-0 -z-10">
-      <Canvas gl={{ physicallyCorrectLights: true, toneMapping: THREE.ACESFilmicToneMapping, outputColorSpace: THREE.SRGBColorSpace }}>
+      <Canvas gl={{ toneMapping: THREE.ACESFilmicToneMapping, outputColorSpace: THREE.SRGBColorSpace }}>
         <PerspectiveCamera makeDefault position={[0, 0, 5]} />
         
         {/* Lighting setup */}
         <ambientLight intensity={0.3} />
-        <hemisphereLight skyColor={'#ffffff'} groundColor={'#222222'} intensity={0.6} />
+        <hemisphereLight args={["#ffffff", "#222222", 0.6]} />
         <directionalLight
           position={[10, 10, 5]}
           intensity={1}
