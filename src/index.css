@@ -130,8 +130,9 @@ Premium black/white theme with blood red accents */
   }
 
   body {
-    @apply bg-background text-foreground overflow-x-hidden;
+    @apply bg-black text-white overflow-x-hidden;
     font-family: var(--font-primary);
+    background-color: #000000 !important;
   }
   
   html {
