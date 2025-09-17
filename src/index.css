@@ -130,9 +130,8 @@ Premium black/white theme with blood red accents */
   }
 
   body {
-    @apply bg-black text-white overflow-x-hidden;
+    @apply bg-background text-foreground overflow-x-hidden;
     font-family: var(--font-primary);
-    background-color: #000000 !important;
   }
   
   html {
@@ -144,9 +143,14 @@ Premium black/white theme with blood red accents */
 @layer components {
   /* Dot grid overlay */
   .dot-grid {
-    background-image: url('/assets/dot-grid.jpg');
+    /* Transparent dot pattern so the black background shows through */
+    background-image: radial-gradient(
+      hsl(var(--foreground) / var(--dot-opacity)) var(--dot-size),
+      transparent var(--dot-size)
+    );
     background-size: 24px 24px;
     background-repeat: repeat;
+    background-color: transparent;
   }
   
   /* Dither effect for text reveals */
