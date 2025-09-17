@@ -209,14 +209,6 @@ export default function ContactSection() {
               </div>
             </div>
 
-            {/* Availability */}
-            <div className="bg-gradient-to-br from-primary/20 to-accent/20 border border-primary/30 rounded-lg p-6">
-              <h4 className="font-bold mb-2 text-primary">Current Availability</h4>
-              <p className="text-sm text-muted-foreground">
-                Currently accepting new projects for Q2 2024. 
-                Book early to secure your preferred dates.
-              </p>
-            </div>
           </motion.div>
         </div>
       </div>
