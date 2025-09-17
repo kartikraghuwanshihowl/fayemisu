@@ -78,10 +78,10 @@ export default function PortfolioSection() {
           transition={{ duration: 0.8 }}
           className="text-center mb-16"
         >
-          <h2 className="text-5xl font-bold mb-6 dither-reveal">
+          <h2 className="text-5xl font-bold mb-6 dither-reveal animate-fade-in">
             Portfolio
           </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto animate-fade-in">
             A curated collection of visual stories, each folder containing moments captured with precision and artistry.
           </p>
         </motion.div>
@@ -95,7 +95,7 @@ export default function PortfolioSection() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
               whileHover={{ scale: 1.05, rotateY: 5 }}
-              className="folder-card group cursor-pointer"
+              className="folder-card group cursor-pointer relative overflow-hidden"
               onClick={() => setSelectedFolder(folder)}
             >
               {/* Folder Preview */}

@@ -18,7 +18,7 @@ export default function HeroSection() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1.5, delay: 0.8 }}
-            className="text-6xl md:text-8xl font-bold mb-6 dither-reveal"
+            className="text-6xl md:text-8xl font-bold mb-6 dither-reveal animate-fade-in"
           >
             Visual
             <br />
@@ -30,7 +30,7 @@ export default function HeroSection() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1.2 }}
-            className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-2xl mx-auto"
+            className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-2xl mx-auto animate-fade-in"
           >
             Photographs & films. Crafted with intent.
             <br />
@@ -44,13 +44,13 @@ export default function HeroSection() {
             transition={{ duration: 0.8, delay: 1.5 }}
             className="flex flex-col sm:flex-row gap-4 justify-center items-center"
           >
-            <button className="btn-cinematic bg-primary text-primary-foreground hover:bg-primary-glow">
+            <a href="#portfolio" className="btn-cinematic bg-primary text-primary-foreground hover:bg-primary-glow">
               Explore Portfolio
-            </button>
+            </a>
             
-            <button className="btn-cinematic bg-primary text-primary-foreground hover:bg-primary-glow">
+            <a href="#music" className="btn-cinematic bg-primary text-primary-foreground hover:bg-primary-glow">
               Listen to Sessions
-            </button>
+            </a>
           </motion.div>
 
           {/* Scroll indicator */}
