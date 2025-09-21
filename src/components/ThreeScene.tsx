@@ -16,6 +16,7 @@ interface ModelProps {
 function Model({ url, scrollY, inPortfolio, scale = 1 }: ModelProps) {
   const meshRef = useRef<THREE.Group>(null);
   const [gltf, setGltf] = useState<any>(null);
+  const [normalizedScale, setNormalizedScale] = useState<number>(scale);
   const { gl } = useThree();
 
   useEffect(() => {
@@ -33,25 +34,50 @@ function Model({ url, scrollY, inPortfolio, scale = 1 }: ModelProps) {
     loader.load(
       url,
       (loadedGltf) => {
+        // Enable shadows and compute normalized scale
+        loadedGltf.scene.traverse((obj: any) => {
+          if (obj.isMesh) {
+            obj.castShadow = true;
+            obj.receiveShadow = true;
+          }
+        });
+
+        // Center and normalize to a consistent size so it is always visible
+        const box = new THREE.Box3().setFromObject(loadedGltf.scene);
+        const size = new THREE.Vector3();
+        const center = new THREE.Vector3();
+        box.getSize(size);
+        box.getCenter(center);
+
+        // Recenter the model around origin
+        loadedGltf.scene.position.sub(center);
+
+        // Largest axis determines scale factor
+        const maxAxis = Math.max(size.x, size.y, size.z) || 1;
+        const targetSize = 2.0; // world units to fit nicely in the camera view
+        const fitScale = (targetSize / maxAxis) * scale;
+        setNormalizedScale(fitScale);
+
         setGltf(loadedGltf);
+        console.info('GLTF loaded:', url, { size, center, fitScale });
       },
       undefined,
       (error) => {
         console.error('Error loading GLTF:', error);
       }
     );
-  }, [url]);
+  }, [url, gl, scale]);
 
   useFrame((state) => {
     if (!meshRef.current) return;
 
     if (inPortfolio) {
       // Lock to facing right position
-        meshRef.current.rotation.y = THREE.MathUtils.lerp(
-          meshRef.current.rotation.y,
-          Math.PI / 2,
-          0.08
-        );
+      meshRef.current.rotation.y = THREE.MathUtils.lerp(
+        meshRef.current.rotation.y,
+        Math.PI / 2,
+        0.08
+      );
     } else {
       // Scroll-based rotation
       const targetRotation = scrollY * 0.002;
@@ -69,7 +95,7 @@ function Model({ url, scrollY, inPortfolio, scale = 1 }: ModelProps) {
   if (!gltf) return null;
 
   return (
-    <group ref={meshRef} scale={scale}>
+    <group ref={meshRef} scale={normalizedScale}>
       <primitive object={gltf.scene} />
     </group>
   );
@@ -88,11 +114,11 @@ export default function ThreeScene({ scrollY, inPortfolio, currentModel }: Three
         <PerspectiveCamera makeDefault position={[0, 0, 5]} />
         
         {/* Lighting setup */}
-        <ambientLight intensity={0.3} />
-        <hemisphereLight args={["#ffffff", "#222222", 0.6]} />
+        <ambientLight intensity={0.5} />
+        <hemisphereLight args={["#ffffff", "#222222", 0.7]} />
         <directionalLight
           position={[10, 10, 5]}
-          intensity={1}
+          intensity={1.2}
           castShadow
           shadow-mapSize-width={2048}
           shadow-mapSize-height={2048}
