@@ -1,8 +1,6 @@
 import { useRef, useEffect, useState } from 'react';
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { Canvas, useFrame } from '@react-three/fiber';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
-import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader.js';
 import { Environment, PerspectiveCamera } from '@react-three/drei';
 import * as THREE from 'three';
 
@@ -17,20 +15,10 @@ function Model({ url, scrollY, inPortfolio, scale = 1 }: ModelProps) {
   const meshRef = useRef<THREE.Group>(null);
   const [gltf, setGltf] = useState<any>(null);
   const [normalizedScale, setNormalizedScale] = useState<number>(scale);
-  const { gl } = useThree();
 
   useEffect(() => {
     const loader = new GLTFLoader();
-    const dracoLoader = new DRACOLoader();
-    dracoLoader.setDecoderPath('/draco/');
-
-    const ktx2Loader = new KTX2Loader();
-    ktx2Loader.setTranscoderPath('/basis/');
-    try { ktx2Loader.detectSupport(gl); } catch {}
-
-    loader.setDRACOLoader(dracoLoader);
-    loader.setKTX2Loader(ktx2Loader);
-
+    console.info('Loading GLTF:', url);
     loader.load(
       url,
       (loadedGltf) => {
@@ -59,14 +47,14 @@ function Model({ url, scrollY, inPortfolio, scale = 1 }: ModelProps) {
         setNormalizedScale(fitScale);
 
         setGltf(loadedGltf);
-        console.info('GLTF loaded:', url, { size, center, fitScale });
+        console.info('GLTF loaded successfully:', url, { size, center, fitScale });
       },
       undefined,
       (error) => {
         console.error('Error loading GLTF:', error);
       }
     );
-  }, [url, gl, scale]);
+  }, [url, scale]);
 
   useFrame((state) => {
     if (!meshRef.current) return;
@@ -109,7 +97,7 @@ interface ThreeSceneProps {
 
 export default function ThreeScene({ scrollY, inPortfolio, currentModel }: ThreeSceneProps) {
   return (
-    <div className="fixed inset-0 -z-10">
+    <div className="pointer-events-none fixed inset-0 z-0">
       <Canvas gl={{ toneMapping: THREE.ACESFilmicToneMapping, outputColorSpace: THREE.SRGBColorSpace }}>
         <PerspectiveCamera makeDefault position={[0, 0, 5]} />
         
@@ -127,6 +115,12 @@ export default function ThreeScene({ scrollY, inPortfolio, currentModel }: Three
         {/* Environment for reflections */}
         <Environment preset="city" background={false} />
         
+        {/* Debug cube to validate canvas visibility */}
+        <mesh position={[0, 0, -2]}>
+          <boxGeometry args={[0.2, 0.2, 0.2]} />
+          <meshBasicMaterial color="hotpink" />
+        </mesh>
+        
         {/* Main 3D Model */}
         <Model
           url={currentModel}
@@ -136,7 +130,7 @@ export default function ThreeScene({ scrollY, inPortfolio, currentModel }: Three
         />
         
         {/* Subtle fog for depth */}
-        <fog attach="fog" args={['#000000', 8, 20]} />
+        <fog attach="fog" args={["#000000", 8, 20]} />
       </Canvas>
     </div>
   );
