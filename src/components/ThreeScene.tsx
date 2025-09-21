@@ -9,9 +9,10 @@ interface ModelProps {
   scrollY: number;
   inPortfolio: boolean;
   scale?: number;
+  isPlaying?: boolean;
 }
 
-function Model({ url, scrollY, inPortfolio, scale = 1 }: ModelProps) {
+function Model({ url, scrollY, inPortfolio, scale = 1, isPlaying = false }: ModelProps) {
   const meshRef = useRef<THREE.Group>(null);
   const [gltf, setGltf] = useState<any>(null);
   const [normalizedScale, setNormalizedScale] = useState<number>(scale);
@@ -66,8 +67,19 @@ function Model({ url, scrollY, inPortfolio, scale = 1 }: ModelProps) {
         Math.PI / 2,
         0.08
       );
+    } else if (url.includes('vinyl') && isPlaying) {
+      // Continuous rotation for vinyl when playing
+      meshRef.current.rotation.y += 0.02;
+    } else if (url.includes('vinyl') && !isPlaying) {
+      // Gradual stop for vinyl when not playing
+      const targetRotation = Math.round(meshRef.current.rotation.y / (Math.PI * 2)) * Math.PI * 2;
+      meshRef.current.rotation.y = THREE.MathUtils.lerp(
+        meshRef.current.rotation.y,
+        targetRotation,
+        0.02
+      );
     } else {
-      // Scroll-based rotation
+      // Scroll-based rotation for other models
       const targetRotation = scrollY * 0.002;
       meshRef.current.rotation.y = THREE.MathUtils.lerp(
         meshRef.current.rotation.y,
@@ -93,9 +105,10 @@ interface ThreeSceneProps {
   scrollY: number;
   inPortfolio: boolean;
   currentModel: string;
+  isPlaying?: boolean;
 }
 
-export default function ThreeScene({ scrollY, inPortfolio, currentModel }: ThreeSceneProps) {
+export default function ThreeScene({ scrollY, inPortfolio, currentModel, isPlaying = false }: ThreeSceneProps) {
   return (
     <div className="pointer-events-none fixed inset-0 z-0">
       <Canvas gl={{ toneMapping: THREE.ACESFilmicToneMapping, outputColorSpace: THREE.SRGBColorSpace }}>
@@ -115,18 +128,13 @@ export default function ThreeScene({ scrollY, inPortfolio, currentModel }: Three
         {/* Environment for reflections */}
         <Environment preset="city" background={false} />
         
-        {/* Debug cube to validate canvas visibility */}
-        <mesh position={[0, 0, -2]}>
-          <boxGeometry args={[0.2, 0.2, 0.2]} />
-          <meshBasicMaterial color="hotpink" />
-        </mesh>
-        
         {/* Main 3D Model */}
         <Model
           url={currentModel}
           scrollY={scrollY}
           inPortfolio={inPortfolio}
           scale={1.5}
+          isPlaying={isPlaying}
         />
         
         {/* Subtle fog for depth */}

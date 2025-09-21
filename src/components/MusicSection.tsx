@@ -54,7 +54,11 @@ function VinylModel({ isPlaying }: { isPlaying: boolean }) {
   );
 }
 
-export default function MusicSection() {
+interface MusicSectionProps {
+  onPlayStateChange?: (isPlaying: boolean) => void;
+}
+
+export default function MusicSection({ onPlayStateChange }: MusicSectionProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTrack, setCurrentTrack] = useState('');
 
@@ -133,7 +137,11 @@ export default function MusicSection() {
                     </p>
                   </div>
                   <button
-                    onClick={() => setIsPlaying(!isPlaying)}
+                    onClick={() => {
+                      const newPlayState = !isPlaying;
+                      setIsPlaying(newPlayState);
+                      onPlayStateChange?.(newPlayState);
+                    }}
                     className={`w-12 h-12 rounded-full border-2 transition-all duration-300 flex items-center justify-center ${
                       isPlaying
                         ? 'border-accent bg-accent text-accent-foreground'
@@ -176,6 +184,7 @@ export default function MusicSection() {
                   onClick={() => {
                     setCurrentTrack(playlist.name);
                     setIsPlaying(true);
+                    onPlayStateChange?.(true);
                   }}
                 >
                   <div className="flex items-center space-x-4">

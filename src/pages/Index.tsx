@@ -12,6 +12,7 @@ const Index = () => {
   const scrollY = useScrollY();
   const activeSection = useScrollSpy(['home', 'portfolio', 'music', 'about', 'contact']);
   const [currentModel, setCurrentModel] = useState('/assets/models/scene.gltf');
+  const [isPlaying, setIsPlaying] = useState(false);
 
   // Determine if we're in portfolio section for 3D model positioning
   const inPortfolio = activeSection === 'portfolio';
@@ -47,6 +48,7 @@ const Index = () => {
         scrollY={scrollY}
         inPortfolio={inPortfolio}
         currentModel={currentModel}
+        isPlaying={isPlaying}
       />
 
       {/* Header */}
@@ -56,7 +58,7 @@ const Index = () => {
       <main className="relative z-10">
         <HeroSection />
         <PortfolioSection />
-        <MusicSection />
+        <MusicSection onPlayStateChange={setIsPlaying} />
         <AboutSection />
         <ContactSection />
       </main>
