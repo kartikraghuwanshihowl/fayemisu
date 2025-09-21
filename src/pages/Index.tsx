@@ -20,16 +20,16 @@ const Index = () => {
   useEffect(() => {
     switch (activeSection) {
       case 'home':
-        setCurrentModel('/assets/models/scene.gltf');
+        setCurrentModel('/models/untitled.glb');
         break;
       case 'portfolio':
         setCurrentModel('/assets/models/nikon.gltf');
         break;
       case 'music':
-        setCurrentModel('/assets/models/camera.gltf');
+        setCurrentModel('/models/vinyl.glb');
         break;
       default:
-        setCurrentModel('/assets/models/scene.gltf');
+        setCurrentModel('/models/untitled.glb');
     }
   }, [activeSection]);
 
