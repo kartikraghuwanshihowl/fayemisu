@@ -67,7 +67,7 @@ export default function MusicSection({ onPlayStateChange }: MusicSectionProps) {
       name: 'Cinematic Sessions',
       artist: 'Kartik',
       cover: '/assets/sample-portrait.jpg',
-      spotifyUrl: 'https://open.spotify.com/playlist/5ScyGPT9yln8qiBVXidF6J?si=PCIz2LlCSDau3fdF9mKbig',
+      spotifyUrl: 'https://open.spotify.com/playlist/5uFOAitxMHf3sINYaV1s8l?si=SUbGWuJGTwSjS9_6_y6VQg',
     },
     {
       name: 'Behind the Lens',
@@ -87,10 +87,10 @@ export default function MusicSection({ onPlayStateChange }: MusicSectionProps) {
           className="text-center mb-16"
         >
           <h2 className="text-5xl font-bold mb-6 dither-reveal">
-            Music & <span className="text-accent">Sound</span>
+            My <span className="text-accent">Playlist</span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Audio landscapes that complement visual storytelling. Original compositions and curated playlists.
+            I love sharing some of my playlists because music is a huge passion of mine, with favorite artists like Sweet Trip, TV Girl, Panchiko, Mazzy Star, and anything in the shoegaze genre.
           </p>
         </motion.div>
 

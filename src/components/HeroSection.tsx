@@ -20,9 +20,9 @@ export default function HeroSection() {
             transition={{ duration: 1.5, delay: 0.8 }}
             className="text-6xl md:text-8xl font-bold mb-6 dither-reveal animate-fade-in"
           >
-            Visual
+            visual
             <br />
-            <span className="text-primary">Storyteller</span>
+            <span className="text-primary">diary</span>
           </motion.h1>
 
           {/* Subheading */}
@@ -32,9 +32,7 @@ export default function HeroSection() {
             transition={{ duration: 0.8, delay: 1.2 }}
             className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-2xl mx-auto animate-fade-in"
           >
-            Photographs & films. Crafted with intent.
-            <br />
-            Color-accurate prints & cinematic edits.
+            Creating with instinct and perception by experimenting and exploring creativity.
           </motion.p>
 
           {/* CTA Buttons */}
@@ -49,7 +47,7 @@ export default function HeroSection() {
             </a>
             
             <a href="#music" className="btn-cinematic bg-primary text-primary-foreground hover:bg-primary-glow">
-              Listen to Sessions
+              Listen to Music
             </a>
           </motion.div>
 

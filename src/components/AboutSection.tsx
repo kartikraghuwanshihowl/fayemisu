@@ -11,10 +11,7 @@ export default function AboutSection() {
   ];
 
   const equipment = [
-    { name: 'Nikon D850', type: 'Camera' },
-    { name: 'Canon C300 Mark III', type: 'Video' },
-    { name: 'DJI Ronin 4D', type: 'Stabilizer' },
-    { name: 'Profoto B10X', type: 'Lighting' },
+    { name: 'Nikon L620', type: 'Camera' },
   ];
 
   return (
