@@ -67,13 +67,13 @@ export default function MusicSection({ onPlayStateChange }: MusicSectionProps) {
       name: 'Cinematic Sessions',
       artist: 'Kartik',
       cover: '/assets/sample-portrait.jpg',
-      spotifyUrl: 'https://open.spotify.com/playlist/example1',
+      spotifyUrl: 'https://open.spotify.com/playlist/5ScyGPT9yln8qiBVXidF6J?si=PCIz2LlCSDau3fdF9mKbig',
     },
     {
       name: 'Behind the Lens',
       artist: 'Original Soundtrack',
       cover: '/assets/sample-landscape.jpg',
-      spotifyUrl: 'https://open.spotify.com/playlist/example2',
+      spotifyUrl: 'https://open.spotify.com/playlist/5ScyGPT9yln8qiBVXidF6J?si=PCIz2LlCSDau3fdF9mKbig',
     },
   ];
 
