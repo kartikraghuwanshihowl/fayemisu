@@ -13,18 +13,18 @@ function VinylModel({ isPlaying }: { isPlaying: boolean }) {
 
   useEffect(() => {
     const loader = new GLTFLoader();
-    const dracoLoader = new DRACOLoader();
-    dracoLoader.setDecoderPath('/draco/');
-    loader.setDRACOLoader(dracoLoader);
-
+    
     loader.load(
-      '/assets/models/vinyl.gltf',
+      '/models/vinyl.glb',
       (loadedGltf) => {
+        console.log('Vinyl model loaded successfully');
         setGltf(loadedGltf);
       },
-      undefined,
+      (progress) => {
+        console.log('Loading vinyl progress:', (progress.loaded / progress.total) * 100 + '%');
+      },
       (error) => {
-        console.error('Error loading vinyl GLTF:', error);
+        console.error('Error loading vinyl model:', error);
       }
     );
   }, []);
@@ -45,10 +45,19 @@ function VinylModel({ isPlaying }: { isPlaying: boolean }) {
     meshRef.current.rotation.y += rotationSpeed.current;
   });
 
-  if (!gltf) return null;
+  if (!gltf) {
+    console.log('Vinyl GLTF not loaded yet');
+    return (
+      <mesh>
+        <boxGeometry args={[1, 1, 1]} />
+        <meshStandardMaterial color="hotpink" />
+      </mesh>
+    );
+  }
 
+  console.log('Rendering vinyl model');
   return (
-    <group ref={meshRef} scale={2}>
+    <group ref={meshRef} scale={1.5}>
       <primitive object={gltf.scene} />
     </group>
   );
@@ -100,19 +109,29 @@ export default function MusicSection({ onPlayStateChange }: MusicSectionProps) {
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
-            className="relative h-96"
+            className="relative h-96 w-full bg-black/5 rounded-lg overflow-visible"
+            style={{ minHeight: '400px' }}
           >
-            <Canvas gl={{ toneMapping: THREE.ACESFilmicToneMapping, outputColorSpace: THREE.SRGBColorSpace }} camera={{ position: [0, 0, 5] }}>
-              <ambientLight intensity={0.5} />
-              <pointLight position={[10, 10, 10]} intensity={1} />
-              <pointLight position={[-10, -10, -10]} intensity={0.5} color="#ff0000" />
+            <Canvas 
+              gl={{ 
+                toneMapping: THREE.ACESFilmicToneMapping, 
+                outputColorSpace: THREE.SRGBColorSpace,
+                alpha: true,
+                antialias: true 
+              }} 
+              camera={{ position: [0, 0, 5], fov: 45 }}
+              style={{ background: 'transparent' }}
+            >
+              <ambientLight intensity={0.6} />
+              <pointLight position={[10, 10, 10]} intensity={1.2} />
+              <pointLight position={[-10, -10, -10]} intensity={0.7} color="#ff0000" />
               <Environment preset="studio" />
               <VinylModel isPlaying={isPlaying} />
             </Canvas>
             
             {/* Vinyl glow effect when playing */}
             {isPlaying && (
-              <div className="absolute inset-0 rounded-full bg-accent/20 blur-3xl" />
+              <div className="absolute inset-0 rounded-full bg-accent/20 blur-3xl pointer-events-none" />
             )}
           </motion.div>
 
