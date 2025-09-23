@@ -57,7 +57,7 @@ function VinylModel({ isPlaying }: { isPlaying: boolean }) {
 
   console.log('Rendering vinyl model');
   return (
-    <group ref={meshRef} scale={8.0}>
+    <group ref={meshRef} scale={16.0}>
       <primitive object={gltf.scene} />
     </group>
   );
