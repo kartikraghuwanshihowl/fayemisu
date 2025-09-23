@@ -57,7 +57,7 @@ function VinylModel({ isPlaying }: { isPlaying: boolean }) {
 
   console.log('Rendering vinyl model');
   return (
-    <group ref={meshRef} scale={2.5}>
+    <group ref={meshRef} scale={4.0}>
       <primitive object={gltf.scene} />
     </group>
   );
@@ -93,12 +93,12 @@ export default function MusicSection({ onPlayStateChange }: MusicSectionProps) {
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="text-left mb-16 max-w-6xl mx-auto"
+          className="text-center mb-16"
         >
           <h2 className="text-5xl font-bold mb-6 dither-reveal">
             My <span className="text-accent">Playlist</span>
           </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl">
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             I love sharing some of my playlists because music is a huge passion of mine, with favorite artists like Sweet Trip, TV Girl, Panchiko, Mazzy Star, and anything in the shoegaze genre.
           </p>
         </motion.div>
@@ -109,8 +109,8 @@ export default function MusicSection({ onPlayStateChange }: MusicSectionProps) {
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
-            className="relative h-96 w-full bg-black/5 rounded-lg overflow-visible"
-            style={{ minHeight: '400px' }}
+            className="relative h-96 w-full rounded-lg overflow-visible flex items-center justify-center"
+            style={{ minHeight: '500px', minWidth: '500px' }}
           >
             <Canvas 
               gl={{ 
