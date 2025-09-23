@@ -57,7 +57,7 @@ function VinylModel({ isPlaying }: { isPlaying: boolean }) {
 
   console.log('Rendering vinyl model');
   return (
-    <group ref={meshRef} scale={1.5}>
+    <group ref={meshRef} scale={2.5}>
       <primitive object={gltf.scene} />
     </group>
   );
@@ -93,12 +93,12 @@ export default function MusicSection({ onPlayStateChange }: MusicSectionProps) {
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="text-center mb-16"
+          className="text-left mb-16 max-w-6xl mx-auto"
         >
           <h2 className="text-5xl font-bold mb-6 dither-reveal">
             My <span className="text-accent">Playlist</span>
           </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-xl text-muted-foreground max-w-2xl">
             I love sharing some of my playlists because music is a huge passion of mine, with favorite artists like Sweet Trip, TV Girl, Panchiko, Mazzy Star, and anything in the shoegaze genre.
           </p>
         </motion.div>
