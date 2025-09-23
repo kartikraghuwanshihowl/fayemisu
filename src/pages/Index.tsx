@@ -17,7 +17,7 @@ const Index = () => {
   // Determine if we're in portfolio section for 3D model positioning
   const inPortfolio = activeSection === 'portfolio';
 
-  // Change model based on section
+  // Change model based on section - exclude music section as it has its own vinyl model
   useEffect(() => {
     switch (activeSection) {
       case 'home':
@@ -27,7 +27,7 @@ const Index = () => {
         setCurrentModel('/assets/models/nikon.gltf');
         break;
       case 'music':
-        setCurrentModel('/models/vinyl.glb');
+        setCurrentModel(''); // No global model for music section
         break;
       default:
         setCurrentModel('/models/untitled.glb');

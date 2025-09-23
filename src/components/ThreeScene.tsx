@@ -109,6 +109,9 @@ interface ThreeSceneProps {
 }
 
 export default function ThreeScene({ scrollY, inPortfolio, currentModel, isPlaying = false }: ThreeSceneProps) {
+  // Don't render if no model is specified (e.g., in music section)
+  if (!currentModel) return null;
+
   return (
     <div className="pointer-events-none fixed inset-0 z-0">
       <Canvas gl={{ toneMapping: THREE.ACESFilmicToneMapping, outputColorSpace: THREE.SRGBColorSpace }}>
