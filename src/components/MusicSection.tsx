@@ -10,6 +10,7 @@ function VinylModel({ isPlaying }: { isPlaying: boolean }) {
   const meshRef = useRef<THREE.Group>(null);
   const [gltf, setGltf] = useState<any>(null);
   const rotationSpeed = useRef(0);
+  const targetSpeed = useRef(0);
 
   useEffect(() => {
     const loader = new GLTFLoader();
@@ -35,18 +36,29 @@ function VinylModel({ isPlaying }: { isPlaying: boolean }) {
     // Floating animation
     meshRef.current.position.y = Math.sin(state.clock.elapsedTime * 0.8) * 0.2;
 
-    // Realistic vinyl rotation - only Y-axis like real vinyl
-    if (isPlaying) {
-      rotationSpeed.current = THREE.MathUtils.lerp(rotationSpeed.current, 0.05, 0.1);
-    } else {
-      rotationSpeed.current = THREE.MathUtils.lerp(rotationSpeed.current, 0, 0.05);
-    }
-
-    // Small natural jitter for realism
-    const microJitter = (Math.random() - 0.5) * 0.0002;
+    // Real vinyl record rotation physics
+    // 33⅓ RPM ≈ 0.065 radians per frame at 60fps
+    // 45 RPM ≈ 0.0785 radians per frame at 60fps
+    const vinylRPM = 0.07; // Sweet spot between 33⅓ and 45 RPM
     
-    // Apply rotation only on Y-axis like real vinyl
-    meshRef.current.rotation.y += rotationSpeed.current + microJitter;
+    // Set target speed based on play state
+    targetSpeed.current = isPlaying ? vinylRPM : 0;
+    
+    // Smooth acceleration/deceleration like real turntable motor
+    const acceleration = isPlaying ? 0.002 : 0.001; // Slower deceleration like real vinyl
+    rotationSpeed.current = THREE.MathUtils.lerp(
+      rotationSpeed.current, 
+      targetSpeed.current, 
+      acceleration
+    );
+
+    // Subtle natural jitter to simulate motor imperfection (only when playing)
+    const motorJitter = isPlaying ? (Math.random() - 0.5) * 0.0001 : 0;
+    
+    // Apply rotation ONLY on Y-axis like real vinyl record
+    meshRef.current.rotation.y += rotationSpeed.current + motorJitter;
+    
+    // Lock X and Z rotation to 0 at all times (flat on turntable)
     meshRef.current.rotation.x = 0;
     meshRef.current.rotation.z = 0;
   });
