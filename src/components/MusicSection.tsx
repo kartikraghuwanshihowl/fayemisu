@@ -9,8 +9,7 @@ import * as THREE from 'three';
 function VinylModel({ isPlaying }: { isPlaying: boolean }) {
   const meshRef = useRef<THREE.Group>(null);
   const [gltf, setGltf] = useState<any>(null);
-  const rotationSpeed = useRef(0);
-  const targetSpeed = useRef(0);
+  const vinylSpeed = useRef(0);
 
   useEffect(() => {
     const loader = new GLTFLoader();
@@ -36,31 +35,24 @@ function VinylModel({ isPlaying }: { isPlaying: boolean }) {
     // Floating animation
     meshRef.current.position.y = Math.sin(state.clock.elapsedTime * 0.8) * 0.2;
 
-    // Real vinyl record rotation physics
-    // 33⅓ RPM ≈ 0.065 radians per frame at 60fps
-    // 45 RPM ≈ 0.0785 radians per frame at 60fps
-    const vinylRPM = 0.07; // Sweet spot between 33⅓ and 45 RPM
+    // Real vinyl record physics - 33⅓ RPM ≈ 0.0349 radians per frame at 60fps
+    const targetRPM = 0.0349; // 33⅓ RPM equivalent
+    const targetSpeed = isPlaying ? targetRPM : 0;
     
-    // Set target speed based on play state
-    targetSpeed.current = isPlaying ? vinylRPM : 0;
+    // Smooth acceleration when starting, slower deceleration when stopping (like real turntables)
+    const acceleration = isPlaying ? 0.0015 : 0.0008; // Faster spin-up, slower spin-down
     
-    // Smooth acceleration/deceleration like real turntable motor
-    const acceleration = isPlaying ? 0.002 : 0.001; // Slower deceleration like real vinyl
-    rotationSpeed.current = THREE.MathUtils.lerp(
-      rotationSpeed.current, 
-      targetSpeed.current, 
-      acceleration
-    );
-
-    // Subtle natural jitter to simulate motor imperfection (only when playing)
-    const motorJitter = isPlaying ? (Math.random() - 0.5) * 0.0001 : 0;
+    // Gradually change speed using easing
+    vinylSpeed.current = THREE.MathUtils.lerp(vinylSpeed.current, targetSpeed, acceleration);
     
-    // Apply rotation ONLY on Y-axis like real vinyl record
-    meshRef.current.rotation.y += rotationSpeed.current + motorJitter;
+    // Subtle micro jitter for organic feel (only when playing and at speed)
+    const isAtSpeed = Math.abs(vinylSpeed.current - targetRPM) < 0.002;
+    const microJitter = (isPlaying && isAtSpeed) ? (Math.random() - 0.5) * 0.00008 : 0;
     
-    // Lock X and Z rotation to 0 at all times (flat on turntable)
-    meshRef.current.rotation.x = 0;
-    meshRef.current.rotation.z = 0;
+    // Apply rotation ONLY on Y-axis - lock X and Z to 0 at all times
+    meshRef.current.rotation.y += vinylSpeed.current + microJitter;
+    meshRef.current.rotation.x = 0; // Always flat
+    meshRef.current.rotation.z = 0; // Always flat
   });
 
   if (!gltf) {
