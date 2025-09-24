@@ -12,11 +12,18 @@ interface Folder {
 
 const portfolioFolders: Folder[] = [
   {
-    id: 'portraits',
-    name: 'Portraits',
+    id: 'photos',
+    name: 'Photos',
     preview: '/assets/sample-portrait.jpg',
-    itemCount: 24,
+    itemCount: 42,
     type: 'photo',
+  },
+  {
+    id: 'videos',
+    name: 'Videos',
+    preview: '/assets/sample-landscape.jpg',
+    itemCount: 28,
+    type: 'video',
   },
   {
     id: 'landscapes',
@@ -26,25 +33,11 @@ const portfolioFolders: Folder[] = [
     type: 'photo',
   },
   {
-    id: 'commercial',
-    name: 'Commercial',
-    preview: '/assets/portfolio-hero.jpg',
-    itemCount: 32,
-    type: 'mixed',
-  },
-  {
     id: 'films',
     name: 'Short Films',
     preview: '/assets/sample-landscape.jpg',
     itemCount: 12,
     type: 'video',
-  },
-  {
-    id: 'events',
-    name: 'Events',
-    preview: '/assets/sample-portrait.jpg',
-    itemCount: 45,
-    type: 'mixed',
   },
   {
     id: 'experimental',

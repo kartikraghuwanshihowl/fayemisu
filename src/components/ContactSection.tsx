@@ -26,19 +26,19 @@ export default function ContactSection() {
     {
       icon: '📧',
       label: 'Email',
-      value: 'kartik@visualstories.com',
-      href: 'mailto:kartik@visualstories.com',
+      value: 'kakashi.644123@gmail.com',
+      href: 'mailto:kakashi.644123@gmail.com',
     },
     {
       icon: '📱',
       label: 'Phone',
-      value: '+1 (555) 123-4567',
-      href: 'tel:+15551234567',
+      value: '+91 7697983737',
+      href: 'tel:+917697983737',
     },
     {
       icon: '📍',
       label: 'Location',
-      value: 'New York, NY',
+      value: 'India',
       href: '#',
     },
   ];
@@ -59,7 +59,7 @@ export default function ContactSection() {
           transition={{ duration: 0.8 }}
           className="text-center mb-16"
         >
-          <h2 className="text-5xl font-bold mb-6 dither-reveal">
+          <h2 className="text-5xl font-bold mb-6 dither-reveal -mt-4">
             Let's Create <span className="text-accent">Together</span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">

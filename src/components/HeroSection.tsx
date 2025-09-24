@@ -18,7 +18,7 @@ export default function HeroSection() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1.5, delay: 0.8 }}
-            className="text-6xl md:text-8xl font-bold mb-6 dither-reveal animate-fade-in"
+            className="text-6xl md:text-8xl font-bold mb-6 dither-reveal animate-fade-in -mt-4"
           >
             visual
             <br />

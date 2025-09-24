@@ -35,14 +35,20 @@ function VinylModel({ isPlaying }: { isPlaying: boolean }) {
     // Floating animation
     meshRef.current.position.y = Math.sin(state.clock.elapsedTime * 0.8) * 0.2;
 
-    // Vinyl rotation based on play state
+    // Realistic vinyl rotation - only Y-axis like real vinyl
     if (isPlaying) {
       rotationSpeed.current = THREE.MathUtils.lerp(rotationSpeed.current, 0.05, 0.1);
     } else {
       rotationSpeed.current = THREE.MathUtils.lerp(rotationSpeed.current, 0, 0.05);
     }
 
-    meshRef.current.rotation.y += rotationSpeed.current;
+    // Small natural jitter for realism
+    const microJitter = (Math.random() - 0.5) * 0.0002;
+    
+    // Apply rotation only on Y-axis like real vinyl
+    meshRef.current.rotation.y += rotationSpeed.current + microJitter;
+    meshRef.current.rotation.x = 0;
+    meshRef.current.rotation.z = 0;
   });
 
   if (!gltf) {
@@ -73,14 +79,14 @@ export default function MusicSection({ onPlayStateChange }: MusicSectionProps) {
 
   const playlists = [
     {
-      name: 'Cinematic Sessions',
+      name: 'womp womp',
       artist: 'Kartik',
       cover: '/assets/sample-portrait.jpg',
       spotifyUrl: 'https://open.spotify.com/playlist/5uFOAitxMHf3sINYaV1s8l?si=SUbGWuJGTwSjS9_6_y6VQg',
     },
     {
-      name: 'Behind the Lens',
-      artist: 'Original Soundtrack',
+      name: 'cope up',
+      artist: '',
       cover: '/assets/sample-landscape.jpg',
       spotifyUrl: 'https://open.spotify.com/playlist/5ScyGPT9yln8qiBVXidF6J?si=PCIz2LlCSDau3fdF9mKbig',
     },
@@ -95,7 +101,7 @@ export default function MusicSection({ onPlayStateChange }: MusicSectionProps) {
           transition={{ duration: 0.8 }}
           className="text-center mb-16"
         >
-          <h2 className="text-5xl font-bold mb-6 dither-reveal">
+          <h2 className="text-5xl font-bold mb-6 dither-reveal -mt-4">
             My <span className="text-accent">Playlist</span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
@@ -216,7 +222,7 @@ export default function MusicSection({ onPlayStateChange }: MusicSectionProps) {
                       <h4 className="font-medium group-hover:text-accent transition-colors">
                         {playlist.name}
                       </h4>
-                      <p className="text-sm text-muted-foreground">{playlist.artist}</p>
+                      {playlist.artist && <p className="text-sm text-muted-foreground">{playlist.artist}</p>}
                     </div>
                     <div className="flex items-center space-x-2">
                       <a
