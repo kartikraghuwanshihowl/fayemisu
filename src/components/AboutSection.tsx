@@ -48,15 +48,15 @@ export default function AboutSection() {
 
             {/* Skills */}
             <div>
-              <h3 className="text-2xl font-bold mb-4 text-accent">Expertise</h3>
-              <div className="grid grid-cols-2 gap-3">
+              <h3 className="text-2xl font-bold mb-6 text-accent">Expertise</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {skills.map((skill, index) => (
                   <motion.div
                     key={skill}
                     initial={{ opacity: 0, scale: 0.8 }}
                     whileInView={{ opacity: 1, scale: 1 }}
                     transition={{ delay: index * 0.1 }}
-                    className="bg-card border border-border rounded-lg p-3 text-center hover:bg-secondary transition-colors"
+                    className="bg-card border border-border rounded-lg p-4 text-center hover:bg-secondary transition-colors"
                   >
                     <span className="text-sm font-medium">{skill}</span>
                   </motion.div>
