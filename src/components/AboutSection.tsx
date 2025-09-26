@@ -49,7 +49,7 @@ export default function AboutSection() {
             {/* Skills */}
             <div>
               <h3 className="text-2xl font-bold mb-6 text-accent">Expertise</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 {skills.map((skill, index) => (
                   <motion.div
                     key={skill}
