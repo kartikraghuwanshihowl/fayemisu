@@ -105,7 +105,7 @@ export default function MusicSection({ onPlayStateChange }: MusicSectionProps) {
           transition={{ duration: 0.8 }}
           className="text-center mb-16"
         >
-          <h2 className="text-5xl font-bold mb-6 dither-reveal -mt-8">
+          <h2 className="text-5xl font-bold mb-6 dither-reveal -mt-16">
             My <span className="text-accent">Playlist</span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
