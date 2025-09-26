@@ -97,7 +97,7 @@ export default function MusicSection({ onPlayStateChange }: MusicSectionProps) {
   ];
 
   return (
-    <section id="music" className="min-h-screen py-20 relative bg-background">
+    <section id="music" className="min-h-screen pt-10 md:pt-16 pb-20 relative bg-background">
       <div className="container mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 50 }}
@@ -105,7 +105,7 @@ export default function MusicSection({ onPlayStateChange }: MusicSectionProps) {
           transition={{ duration: 0.8 }}
           className="text-center mb-16"
         >
-          <h2 className="text-5xl font-bold mb-6 dither-reveal -mt-16">
+          <h2 className="text-5xl font-bold mb-6 dither-reveal">
             My <span className="text-accent">Playlist</span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">

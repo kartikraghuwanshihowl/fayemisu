@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 
 export default function HeroSection() {
   return (
-    <section id="home" className="relative min-h-screen flex items-center justify-center">
+    <section id="home" className="relative min-h-screen flex items-start justify-center pt-16 md:pt-24">
       {/* Dot grid overlay */}
       <div className="absolute inset-0 dot-grid opacity-30" />
       
@@ -18,7 +18,7 @@ export default function HeroSection() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1.5, delay: 0.8 }}
-            className="text-6xl md:text-8xl font-bold mb-6 dither-reveal animate-fade-in -mt-24"
+            className="text-6xl md:text-8xl font-bold mb-6 dither-reveal animate-fade-in"
           >
             visual
             <br />
