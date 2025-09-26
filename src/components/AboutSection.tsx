@@ -41,13 +41,8 @@ export default function AboutSection() {
           >
             <div>
               <h3 className="text-2xl font-bold mb-4 text-accent">Visual Philosophy</h3>
-              <p className="text-muted-foreground leading-relaxed mb-4">
-                Every frame tells a story. My approach combines technical precision with emotional depth, 
-                creating images and films that resonate beyond the moment they capture.
-              </p>
               <p className="text-muted-foreground leading-relaxed">
-                Inspired by cinematic masters and driven by a passion for color accuracy, I bring 
-                a meticulous eye to every project—from intimate portraits to sweeping landscapes.
+                Every frame has a story to tell. I like mixing precision with feeling, making images and films that stick with you long after you've seen them. Inspired by the greats of cinema and obsessed with color and mood, I pay attention to every little detail—whether it's a quiet portrait or a huge landscape. It's all about capturing moments that feel alive, honest, and a little bit timeless.
               </p>
             </div>
 
@@ -69,25 +64,6 @@ export default function AboutSection() {
               </div>
             </div>
 
-            {/* Stats */}
-            <div className="grid grid-cols-3 gap-6">
-              {[
-                { number: '500+', label: 'Projects' },
-                { number: '50+', label: 'Clients' },
-                { number: '5+', label: 'Years' },
-              ].map((stat, index) => (
-                <motion.div
-                  key={stat.label}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  className="text-center"
-                >
-                  <div className="text-3xl font-bold text-primary mb-1">{stat.number}</div>
-                  <div className="text-sm text-muted-foreground">{stat.label}</div>
-                </motion.div>
-              ))}
-            </div>
           </motion.div>
 
           {/* Equipment & Process */}

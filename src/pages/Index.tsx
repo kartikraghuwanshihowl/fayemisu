@@ -68,7 +68,7 @@ const Index = () => {
         <div className="absolute inset-0 dot-grid opacity-20 pointer-events-none" />
         <div className="container mx-auto px-6 text-center relative">
           <p className="text-muted-foreground">
-            © 2024 Kartik. All rights reserved.
+            © 2025 Kartik. All rights reserved.
           </p>
         </div>
       </footer>
