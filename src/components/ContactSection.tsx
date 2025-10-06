@@ -1,5 +1,7 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
+import emailjs from '@emailjs/browser';
+import { toast } from '@/components/ui/use-toast';
 
 export default function ContactSection() {
   const [formData, setFormData] = useState({
@@ -8,6 +10,7 @@ export default function ContactSection() {
     project: '',
     message: '',
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData({
@@ -16,10 +19,49 @@ export default function ContactSection() {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission here
-    console.log('Form submitted:', formData);
+
+    const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID as string;
+    const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID as string;
+    const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY as string;
+
+    if (!serviceId || !templateId || !publicKey) {
+      toast({
+        title: 'Email service not configured',
+        description: 'Missing EmailJS environment variables. Please set VITE_EMAILJS_SERVICE_ID, VITE_EMAILJS_TEMPLATE_ID, and VITE_EMAILJS_PUBLIC_KEY.',
+      });
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+
+      const templateParams = {
+        from_name: formData.name,
+        from_email: formData.email,
+        project_type: formData.project,
+        message: formData.message,
+      } as Record<string, unknown>;
+
+      await emailjs.send(serviceId, templateId, templateParams, {
+        publicKey,
+      });
+
+      toast({
+        title: 'Message sent',
+        description: "Thanks! I'll get back to you soon.",
+      });
+
+      setFormData({ name: '', email: '', project: '', message: '' });
+    } catch (err) {
+      toast({
+        title: 'Failed to send',
+        description: 'Please try again in a moment or email me directly.',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const contactInfo = [
@@ -147,9 +189,10 @@ export default function ContactSection() {
                 type="submit"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="w-full btn-cinematic bg-primary hover:bg-primary-glow text-primary-foreground font-medium"
+                disabled={isSubmitting}
+                className="w-full btn-cinematic bg-primary hover:bg-primary-glow text-primary-foreground font-medium disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                Send Message
+                {isSubmitting ? 'Sending…' : 'Send Message'}
               </motion.button>
             </form>
           </motion.div>

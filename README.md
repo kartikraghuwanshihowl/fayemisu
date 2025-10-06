@@ -60,6 +60,22 @@ This project is built with:
 - shadcn-ui
 - Tailwind CSS
 
+## Contact form email setup (EmailJS)
+
+The contact form in `src/components/ContactSection.tsx` sends emails using EmailJS. To enable it:
+
+1. Create a free account at `https://www.emailjs.com` and add an Email Service and an Email Template with fields: `from_name`, `from_email`, `project_type`, `message`.
+2. Create a `.env` file in the project root with these keys (Vite requires the `VITE_` prefix):
+
+```
+VITE_EMAILJS_SERVICE_ID=your_service_id
+VITE_EMAILJS_TEMPLATE_ID=your_template_id
+VITE_EMAILJS_PUBLIC_KEY=your_public_key
+```
+
+3. Restart the dev server after adding env vars.
+4. Submit the form on the Contact section. On success, you will see a toast confirmation.
+
 ## How can I deploy this project?
 
 Simply open [Lovable](https://lovable.dev/projects/dc31f3b5-1c09-4ba0-842b-937e73d65db4) and click on Share -> Publish.

@@ -39,8 +39,8 @@ function VinylModel({ isPlaying }: { isPlaying: boolean }) {
     const targetRPM = 0.0349; // 33⅓ RPM equivalent
     const targetSpeed = isPlaying ? targetRPM : 0;
     
-    // Smooth acceleration when starting, slower deceleration when stopping (like real turntables)
-    const acceleration = isPlaying ? 0.0015 : 0.0008; // Faster spin-up, slower spin-down
+    // Smooth acceleration when starting, quicker deceleration when stopping
+    const acceleration = isPlaying ? 0.0018 : 0.004; // Slightly faster spin-up, faster spin-down
     
     // Gradually change speed using easing
     vinylSpeed.current = THREE.MathUtils.lerp(vinylSpeed.current, targetSpeed, acceleration);
@@ -80,19 +80,162 @@ interface MusicSectionProps {
 export default function MusicSection({ onPlayStateChange }: MusicSectionProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTrack, setCurrentTrack] = useState('');
+  const [currentUri, setCurrentUri] = useState<string>('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const spotifyApiRef = useRef<any>(null);
+  const spotifyControllerRef = useRef<any>(null);
+  // Stable host managed by React; we mount Spotify into a child element that React does NOT own
+  const spotifyHostRef = useRef<HTMLDivElement | null>(null);
+  const spotifyMountRef = useRef<HTMLDivElement | null>(null);
+  const controllerReadyRef = useRef(false);
+
+  // Load Spotify IFrame API once
+  useEffect(() => {
+    const existing = document.querySelector('script[src="https://open.spotify.com/embed/iframe-api/v1"]') as HTMLScriptElement | null;
+    if (!existing) {
+      const script = document.createElement('script');
+      script.src = 'https://open.spotify.com/embed/iframe-api/v1';
+      script.async = true;
+      script.onload = () => {
+        console.log('Spotify API script loaded');
+      };
+      script.onerror = () => {
+        console.error('Failed to load Spotify API script');
+        setError('Failed to load Spotify player');
+      };
+      document.body.appendChild(script);
+    }
+
+    // @ts-ignore - Spotify attaches this callback globally
+    (window as any).onSpotifyIframeApiReady = (IFrameAPI: any) => {
+      console.log('Spotify API ready');
+      spotifyApiRef.current = IFrameAPI;
+      setError(null);
+      // If a URI is already chosen, render immediately
+      if (currentUri && spotifyHostRef.current) {
+        renderSpotify(currentUri);
+      }
+    };
+  }, []);
+
+  // Render or update Spotify player when URI changes
+  useEffect(() => {
+    if (currentUri && spotifyApiRef.current && spotifyHostRef.current) {
+      console.log('Rendering Spotify player for URI:', currentUri);
+      renderSpotify(currentUri);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentUri]);
+
+  const renderSpotify = (uri: string) => {
+    if (!spotifyApiRef.current || !spotifyHostRef.current) {
+      console.warn('Spotify API or container not ready');
+      return;
+    }
+
+    setIsLoading(true);
+    setError(null);
+    controllerReadyRef.current = false;
+
+    // Recreate a fresh mount node INSIDE a stable host node React controls
+    try {
+      if (spotifyMountRef.current && spotifyMountRef.current.parentNode === spotifyHostRef.current) {
+        spotifyHostRef.current.removeChild(spotifyMountRef.current);
+      }
+    } catch {}
+    const mountEl = document.createElement('div');
+    mountEl.style.width = '100%';
+    mountEl.style.height = '152px';
+    spotifyHostRef.current.appendChild(mountEl);
+    spotifyMountRef.current = mountEl;
+
+    try {
+      spotifyApiRef.current.createController(
+        mountEl,
+        { 
+          uri,
+          width: '100%',
+          height: '152',
+          theme: 'dark'
+        },
+        (controller: any) => {
+          console.log('Spotify controller created for:', uri);
+          spotifyControllerRef.current = controller;
+          controllerReadyRef.current = true;
+
+          // Listen for playback state updates from Spotify and keep UI in sync
+          try {
+            controller.addListener?.('playback_update', (event: any) => {
+              console.log('Playback update:', event);
+              const isPaused = event?.data?.isPaused ?? event?.data?.is_paused;
+              if (typeof isPaused === 'boolean') {
+                console.log('Setting isPlaying to:', !isPaused);
+                setIsPlaying(!isPaused);
+                onPlayStateChange?.(!isPaused);
+              }
+            });
+
+            controller.addListener?.('playback_state_changed', (event: any) => {
+              console.log('Playback state changed:', event);
+              const isPaused = event?.data?.isPaused ?? event?.data?.is_paused;
+              if (typeof isPaused === 'boolean') {
+                console.log('Setting isPlaying to:', !isPaused);
+                setIsPlaying(!isPaused);
+                onPlayStateChange?.(!isPaused);
+              }
+            });
+
+            controller.addListener?.('ready', () => {
+              console.log('Controller ready, attempting to sync state');
+              setIsLoading(false);
+              // Controller is ready, attempt to sync initial state
+              try {
+                if (isPlaying) {
+                  console.log('Auto-playing after controller ready');
+                  controller.play();
+                } else {
+                  controller.pause();
+                }
+              } catch (e) {
+                console.warn('Failed to sync initial playback state:', e);
+              }
+            });
+
+            controller.addListener?.('initialization_error', (event: any) => {
+              console.error('Spotify controller initialization error:', event);
+              setError('Failed to initialize Spotify player');
+              setIsLoading(false);
+            });
+
+          } catch (e) {
+            console.warn('Failed to add Spotify listeners:', e);
+            setError('Failed to set up Spotify player listeners');
+            setIsLoading(false);
+          }
+        }
+      );
+    } catch (e) {
+      console.error('Failed to create Spotify controller:', e);
+      setError('Failed to create Spotify player');
+      setIsLoading(false);
+    }
+  };
 
   const playlists = [
     {
       name: 'womp womp',
       artist: 'Kartik',
-      cover: '/assets/sample-portrait.jpg',
-      spotifyUrl: 'https://open.spotify.com/playlist/5uFOAitxMHf3sINYaV1s8l?si=SUbGWuJGTwSjS9_6_y6VQg',
+      cover: '/assets/womp.jpg',
+      spotifyUrl: 'https://open.spotify.com/playlist/5uFOAitxMHf3sINYaV1s8l?si=h6kYxPvCShOae8mVZlkgiw',
+      uri: 'spotify:playlist:5uFOAitxMHf3sINYaV1s8l'
     },
     {
       name: 'cope up',
       artist: '',
-      cover: '/assets/sample-landscape.jpg',
-      spotifyUrl: 'https://open.spotify.com/playlist/5ScyGPT9yln8qiBVXidF6J?si=PCIz2LlCSDau3fdF9mKbig',
+      cover: '/assets/howl.jpg',
+      spotifyUrl: 'https://open.spotify.com/playlist/5ScyGPT9yln8qiBVXidF6J?si=jfgfXDr5TJ6Ly6w5V7_vQw',
+      uri: 'spotify:playlist:5ScyGPT9yln8qiBVXidF6J'
     },
   ];
 
@@ -109,7 +252,7 @@ export default function MusicSection({ onPlayStateChange }: MusicSectionProps) {
             My <span className="text-accent">Playlist</span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            I love sharing some of my playlists because music is a huge passion of mine, with favorite artists like Sweet Trip, TV Girl, Panchiko, Mazzy Star, and anything in the shoegaze genre.
+            I love sharing my playlists because music is a big love of mine, especially with favorite artists like Sweet Trip, TV Girl, Panchiko, Mazzy Star, and anything in the shoegaze scene.
           </p>
         </motion.div>
 
@@ -130,7 +273,7 @@ export default function MusicSection({ onPlayStateChange }: MusicSectionProps) {
                 antialias: true 
               }} 
               camera={{ position: [0, 0, 5], fov: 45 }}
-              style={{ background: 'transparent' }}
+              style={{ background: 'transparent', pointerEvents: 'none' }}
             >
               <ambientLight intensity={0.6} />
               <pointLight position={[10, 10, 10]} intensity={1.2} />
@@ -152,7 +295,7 @@ export default function MusicSection({ onPlayStateChange }: MusicSectionProps) {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="space-y-8"
           >
-            {/* Audio Player Control */}
+          {/* Audio Player Control */}
             <div className="bg-card border border-border rounded-lg p-6">
               <h3 className="text-xl font-bold mb-4">Audio Player</h3>
               <div className="space-y-4">
@@ -167,12 +310,46 @@ export default function MusicSection({ onPlayStateChange }: MusicSectionProps) {
                   </div>
                   <button
                     onClick={() => {
+                      // If no playlist selected yet, auto-select the first one
+                      if (!currentUri) {
+                        const first = playlists[0];
+                        setCurrentTrack(first.name);
+                        setCurrentUri(first.uri);
+                        setIsPlaying(true);
+                        onPlayStateChange?.(true);
+                        return;
+                      }
+
                       const newPlayState = !isPlaying;
-                      setIsPlaying(newPlayState);
-                      onPlayStateChange?.(newPlayState);
+                      const controller = spotifyControllerRef.current;
+                      
+                      if (controller && controllerReadyRef.current) {
+                        try {
+                          console.log('Attempting to', newPlayState ? 'play' : 'pause');
+                          if (newPlayState) {
+                            controller.play();
+                          } else {
+                            controller.pause();
+                          }
+                          // Update UI state immediately for better UX
+                          setIsPlaying(newPlayState);
+                          onPlayStateChange?.(newPlayState);
+                        } catch (e) {
+                          console.warn('Failed to control playback:', e);
+                          setError('Failed to control playback');
+                        }
+                      } else {
+                        console.warn('Controller not ready, just updating UI state');
+                        // No controller available, just toggle UI state
+                        setIsPlaying(newPlayState);
+                        onPlayStateChange?.(newPlayState);
+                      }
                     }}
+                    disabled={isLoading}
                     className={`w-12 h-12 rounded-full border-2 transition-all duration-300 flex items-center justify-center ${
-                      isPlaying
+                      isLoading
+                        ? 'border-muted-foreground opacity-50 cursor-not-allowed'
+                        : isPlaying
                         ? 'border-accent bg-accent text-accent-foreground'
                         : 'border-muted-foreground hover:border-accent'
                     }`}
@@ -189,7 +366,7 @@ export default function MusicSection({ onPlayStateChange }: MusicSectionProps) {
                   </button>
                 </div>
                 
-                {/* Progress bar */}
+              {/* Progress bar */}
                 <div className="w-full bg-muted rounded-full h-1">
                   <motion.div
                     className="bg-accent h-1 rounded-full"
@@ -197,6 +374,22 @@ export default function MusicSection({ onPlayStateChange }: MusicSectionProps) {
                     transition={{ duration: isPlaying ? 180 : 0, ease: 'linear' }}
                   />
                 </div>
+
+              {/* Spotify IFrame API Container */}
+              <div className="mt-4">
+                {error && (
+                  <div className="mb-4 p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
+                    <p className="text-sm text-destructive">{error}</p>
+                  </div>
+                )}
+                {isLoading && (
+                  <div className="mb-4 p-3 bg-muted/50 border border-border rounded-lg">
+                    <p className="text-sm text-muted-foreground">Loading Spotify player...</p>
+                  </div>
+                )}
+                {/* Host element owned by React; we create/destroy a child mount node for Spotify */}
+                <div ref={spotifyHostRef} />
+              </div>
               </div>
             </div>
 
@@ -211,9 +404,13 @@ export default function MusicSection({ onPlayStateChange }: MusicSectionProps) {
                   transition={{ delay: index * 0.1 }}
                   className="bg-card border border-border rounded-lg p-4 hover:bg-secondary transition-colors cursor-pointer group"
                   onClick={() => {
+                    console.log('Selecting playlist:', playlist.name, 'URI:', playlist.uri);
                     setCurrentTrack(playlist.name);
+                    setCurrentUri(playlist.uri);
+                    // Set playing state immediately for better UX
                     setIsPlaying(true);
                     onPlayStateChange?.(true);
+                    setError(null);
                   }}
                 >
                   <div className="flex items-center space-x-4">

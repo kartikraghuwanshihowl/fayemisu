@@ -175,9 +175,10 @@ Premium black/white theme with blood red accents */
   
   /* Interactive button styles */
   .btn-cinematic {
-    @apply bg-secondary border border-border text-foreground px-6 py-3 rounded-sm;
-    @apply hover:bg-primary hover:text-primary-foreground transition-all duration-300;
+    @apply border border-border rounded-sm;
+    @apply hover:text-primary-foreground transition-all duration-300;
     @apply hover:shadow-[0_0_20px_hsl(var(--primary)/0.4)];
+    @apply inline-flex items-center justify-center;
   }
   
   /* Navigation underline animation */
