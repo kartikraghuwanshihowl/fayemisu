@@ -1,3 +1,4 @@
+*.mp4 filter=lfs diff=lfs merge=lfs -text
 public/assets/0929.mp4 filter=lfs diff=lfs merge=lfs -text
 public/assets/0929[[:space:]](1)(1).mp4 filter=lfs diff=lfs merge=lfs -text
 public/assets/0929[[:space:]](1)(2).mp4 filter=lfs diff=lfs merge=lfs -text
