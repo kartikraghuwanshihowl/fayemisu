@@ -51,22 +51,6 @@ export default function HeroSection() {
             </a>
           </motion.div>
 
-          {/* Scroll indicator */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 2 }}
-            className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
-          >
-            <div className="flex flex-col items-center text-muted-foreground">
-              <span className="text-sm mb-2">Scroll to explore</span>
-              <motion.div
-                animate={{ y: [0, 10, 0] }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className="w-px h-8 bg-accent"
-              />
-            </div>
-          </motion.div>
         </motion.div>
       </div>
     </section>
