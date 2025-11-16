@@ -5,6 +5,7 @@ import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 import { Environment } from '@react-three/drei';
 import { motion } from 'framer-motion';
 import * as THREE from 'three';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 function VinylModel({ isPlaying }: { isPlaying: boolean }) {
   const meshRef = useRef<THREE.Group>(null);
@@ -77,6 +78,35 @@ interface MusicSectionProps {
   onPlayStateChange?: (isPlaying: boolean) => void;
 }
 
+// Performance detection for low-end devices
+function getDevicePerformance(): 'high' | 'medium' | 'low' {
+  if (typeof window === 'undefined') return 'high';
+  
+  const canvas = document.createElement('canvas');
+  const gl = canvas.getContext('webgl') || canvas.getContext('webgl2');
+  
+  if (!gl) return 'low';
+  
+  const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+  if (debugInfo) {
+    const renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+    // Detect low-end GPUs
+    if (renderer.includes('Mali') || renderer.includes('Adreno 3') || renderer.includes('PowerVR')) {
+      return 'low';
+    }
+    if (renderer.includes('Intel HD') || renderer.includes('Iris')) {
+      return 'medium';
+    }
+  }
+  
+  // Check hardware concurrency (CPU cores)
+  const cores = navigator.hardwareConcurrency || 4;
+  if (cores < 4) return 'low';
+  if (cores < 8) return 'medium';
+  
+  return 'high';
+}
+
 export default function MusicSection({ onPlayStateChange }: MusicSectionProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTrack, setCurrentTrack] = useState('');
@@ -89,6 +119,12 @@ export default function MusicSection({ onPlayStateChange }: MusicSectionProps) {
   const spotifyHostRef = useRef<HTMLDivElement | null>(null);
   const spotifyMountRef = useRef<HTMLDivElement | null>(null);
   const controllerReadyRef = useRef(false);
+  const isMobile = useIsMobile();
+  const [performance, setPerformance] = useState<'high' | 'medium' | 'low'>('high');
+
+  useEffect(() => {
+    setPerformance(getDevicePerformance());
+  }, []);
 
   // Load Spotify IFrame API once
   useEffect(() => {
@@ -240,45 +276,46 @@ export default function MusicSection({ onPlayStateChange }: MusicSectionProps) {
   ];
 
   return (
-    <section id="music" className="min-h-screen pt-10 md:pt-16 pb-20 relative bg-background">
-      <div className="container mx-auto px-6">
+    <section id="music" className="min-h-screen pt-10 md:pt-16 pb-12 sm:pb-20 relative bg-background">
+      <div className="container mx-auto px-4 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="text-center mb-16"
+          className="text-center mb-12 sm:mb-16"
         >
-          <h2 className="text-5xl font-bold mb-6 dither-reveal">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6 dither-reveal px-4">
             My <span className="text-accent">Playlist</span>
           </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto px-4">
             I love sharing my playlists because music is a big love of mine, especially with favorite artists like Sweet Trip, TV Girl, Panchiko, Mazzy Star, and anything in the shoegaze scene.
           </p>
         </motion.div>
 
-        <div className="grid lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center max-w-6xl mx-auto">
           {/* 3D Vinyl */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
-            className="relative h-96 w-full rounded-lg overflow-visible flex items-center justify-center"
-            style={{ minHeight: '500px', minWidth: '500px' }}
+            className="relative h-64 sm:h-80 md:h-96 w-full rounded-lg overflow-hidden flex items-center justify-center"
           >
             <Canvas 
               gl={{ 
                 toneMapping: THREE.ACESFilmicToneMapping, 
                 outputColorSpace: THREE.SRGBColorSpace,
                 alpha: true,
-                antialias: true 
+                antialias: !(performance === 'low' || (isMobile && performance === 'medium')),
+                powerPreference: (performance === 'low' || (isMobile && performance === 'medium')) ? 'low-power' : 'high-performance'
               }} 
               camera={{ position: [0, 0, 5], fov: 45 }}
+              dpr={(performance === 'low' || (isMobile && performance === 'medium')) ? 0.75 : isMobile ? 1 : 1.5}
               style={{ background: 'transparent', pointerEvents: 'none' }}
             >
-              <ambientLight intensity={0.6} />
-              <pointLight position={[10, 10, 10]} intensity={1.2} />
-              <pointLight position={[-10, -10, -10]} intensity={0.7} color="#ff0000" />
-              <Environment preset="studio" />
+              <ambientLight intensity={performance === 'low' ? 0.8 : 0.6} />
+              <pointLight position={[10, 10, 10]} intensity={performance === 'low' ? 0.9 : 1.2} />
+              {performance !== 'low' && <pointLight position={[-10, -10, -10]} intensity={0.7} color="#ff0000" />}
+              {performance !== 'low' && <Environment preset="studio" />}
               <VinylModel isPlaying={isPlaying} />
             </Canvas>
             

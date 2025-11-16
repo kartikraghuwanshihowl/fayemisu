@@ -3,6 +3,7 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { Environment, PerspectiveCamera } from '@react-three/drei';
 import * as THREE from 'three';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface ModelProps {
   url: string;
@@ -108,28 +109,79 @@ interface ThreeSceneProps {
   isPlaying?: boolean;
 }
 
+// Performance detection for low-end devices
+function getDevicePerformance(): 'high' | 'medium' | 'low' {
+  if (typeof window === 'undefined') return 'high';
+  
+  const canvas = document.createElement('canvas');
+  const gl = canvas.getContext('webgl') || canvas.getContext('webgl2');
+  
+  if (!gl) return 'low';
+  
+  const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+  if (debugInfo) {
+    const renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+    // Detect low-end GPUs
+    if (renderer.includes('Mali') || renderer.includes('Adreno 3') || renderer.includes('PowerVR')) {
+      return 'low';
+    }
+    if (renderer.includes('Intel HD') || renderer.includes('Iris')) {
+      return 'medium';
+    }
+  }
+  
+  // Check hardware concurrency (CPU cores)
+  const cores = navigator.hardwareConcurrency || 4;
+  if (cores < 4) return 'low';
+  if (cores < 8) return 'medium';
+  
+  return 'high';
+}
+
 export default function ThreeScene({ scrollY, inPortfolio, currentModel, isPlaying = false }: ThreeSceneProps) {
   // Don't render if no model is specified (e.g., in music section)
   if (!currentModel) return null;
 
+  const isMobile = useIsMobile();
+  const [performance, setPerformance] = useState<'high' | 'medium' | 'low'>('high');
+
+  useEffect(() => {
+    setPerformance(getDevicePerformance());
+  }, []);
+
+  // Determine quality settings based on device
+  const isLowEnd = performance === 'low' || (isMobile && performance === 'medium');
+  const shadowMapSize = isLowEnd ? 512 : isMobile ? 1024 : 2048;
+  const enableShadows = !isLowEnd;
+  const enableEnvironment = !isLowEnd;
+  const pixelRatio = isLowEnd ? 0.75 : isMobile ? 1 : 1.5;
+
   return (
     <div className="pointer-events-none fixed inset-0 z-0">
-      <Canvas gl={{ toneMapping: THREE.ACESFilmicToneMapping, outputColorSpace: THREE.SRGBColorSpace }}>
+      <Canvas 
+        gl={{ 
+          toneMapping: THREE.ACESFilmicToneMapping, 
+          outputColorSpace: THREE.SRGBColorSpace,
+          antialias: !isLowEnd,
+          powerPreference: isLowEnd ? 'low-power' : 'high-performance'
+        }}
+        dpr={pixelRatio}
+      >
         <PerspectiveCamera makeDefault position={[0, 0, 5]} />
         
-        {/* Lighting setup */}
-        <ambientLight intensity={0.5} />
-        <hemisphereLight args={["#ffffff", "#222222", 0.7]} />
+        {/* Lighting setup - reduced for low-end devices */}
+        <ambientLight intensity={isLowEnd ? 0.7 : 0.5} />
+        {!isLowEnd && <hemisphereLight args={["#ffffff", "#222222", 0.7]} />}
         <directionalLight
           position={[10, 10, 5]}
-          intensity={1.2}
-          castShadow
-          shadow-mapSize-width={2048}
-          shadow-mapSize-height={2048}
+          intensity={isLowEnd ? 0.8 : 1.2}
+          castShadow={enableShadows}
+          shadow-mapSize-width={shadowMapSize}
+          shadow-mapSize-height={shadowMapSize}
         />
         
-        {/* Environment for reflections */}
-        <Environment preset="city" background={false} />
+        {/* Environment for reflections - disabled on low-end */}
+        {enableEnvironment && <Environment preset="city" background={false} />}
         
         {/* Main 3D Model */}
         <Model
@@ -140,8 +192,8 @@ export default function ThreeScene({ scrollY, inPortfolio, currentModel, isPlayi
           isPlaying={isPlaying}
         />
         
-        {/* Subtle fog for depth */}
-        <fog attach="fog" args={["#000000", 8, 20]} />
+        {/* Subtle fog for depth - disabled on low-end */}
+        {!isLowEnd && <fog attach="fog" args={["#000000", 8, 20]} />}
       </Canvas>
     </div>
   );

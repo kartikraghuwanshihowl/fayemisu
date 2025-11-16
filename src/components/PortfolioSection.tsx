@@ -63,24 +63,24 @@ export default function PortfolioSection() {
   };
 
   return (
-    <section id="portfolio" className="min-h-screen py-20 relative">
-      <div className="container mx-auto px-6">
+    <section id="portfolio" className="min-h-screen py-12 sm:py-20 relative">
+      <div className="container mx-auto px-4 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="text-center mb-16"
+          className="text-center mb-12 sm:mb-16"
         >
-          <h2 className="text-5xl font-bold mb-6 dither-reveal animate-fade-in">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6 dither-reveal animate-fade-in px-4">
             Portfolio
           </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto animate-fade-in">
+          <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto animate-fade-in px-4">
             A curated collection of visual stories, each folder containing moments captured with precision and artistry.
           </p>
         </motion.div>
 
         {/* Folder Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 max-w-6xl mx-auto">
           {portfolioFolders.map((folder, index) => (
             <motion.div
               key={folder.id}
@@ -88,7 +88,7 @@ export default function PortfolioSection() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
               whileHover={{ scale: 1.05, rotateY: 5 }}
-              className="folder-card group cursor-pointer relative overflow-hidden"
+              className="folder-card group cursor-pointer relative overflow-hidden w-full mx-auto max-w-sm sm:max-w-none"
               onClick={() => setSelectedFolder(folder)}
             >
               {/* Folder Preview */}
